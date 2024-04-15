@@ -1,0 +1,111 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "CUDA: BUILD",
+            "command": "nvcc",
+            "args": [
+                "-g",
+                "-G",
+                "-ccbin",
+                "g++",
+                "-m64",
+                "-gencode",
+                "arch=compute_75,code=sm_75",
+                "${fileBasenameNoExtension}.cu",
+                "-ICommon",
+                "-o",
+                "${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "CUDA: RUN",
+            "type": "shell",
+            "command": "./${fileBasenameNoExtension}",
+            "dependsOn": [
+                "CUDA: BUILD"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "CUDA: PROFILE (nsys)",
+            "type": "shell",
+            "command": "nsys",
+            "args": [
+                "profile",
+                "-f",
+                "true",
+                "-o",
+                "${fileBasenameNoExtension}",
+                "-t",
+                "cuda",
+                "--stats",
+                "true",
+                "${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CUDA: PROFILE (ncu)",
+            "type": "process",
+            "command": "ncu",
+            "args": [
+                "-f",
+                "-o",
+                "${fileBasenameNoExtension}",
+                "--print-summary",
+                "per-kernel",
+                "--metrics",
+                "regex:.*",
+                "--section",
+                "ComputeWorkloadAnalysis",
+                "--section",
+                "InstructionStats",
+                "--section",
+                "LaunchStats",
+                "--section",
+                "MemoryWorkloadAnalysis",
+                "--section",
+                "MemoryWorkloadAnalysis_Chart",
+                "--section",
+                "MemoryWorkloadAnalysis_Tables",
+                "--section",
+                "Occupancy",
+                "--section",
+                "SchedulerStats",
+                "--section",
+                "SpeedOfLight",
+                "--section",
+                "SpeedOfLight_HierarchicalSingleRooflineChart",
+                "--section",
+                "SpeedOfLight_RooflineChart",
+                "--section",
+                "WarpStateStats",
+                "--section",
+                "SourceCounters",
+                "--target-processes",
+                "all",
+                "${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
