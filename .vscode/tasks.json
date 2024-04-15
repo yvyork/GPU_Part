@@ -81,8 +81,6 @@
                 "${fileBasenameNoExtension}",
                 "--print-summary",
                 "per-kernel",
-                "--metrics",
-                "regex:.*",
                 "--section",
                 "ComputeWorkloadAnalysis",
                 "--section",
