@@ -16,7 +16,7 @@
                 "${fileBasenameNoExtension}.cu",
                 "-ICommon",
                 "-o",
-                "${fileBasenameNoExtension}"
+                "bin/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -29,7 +29,7 @@
         },
         {
             "label": "CUDA: RUN",
-            "command": "./${fileBasenameNoExtension}",
+            "command": "./bin/${fileBasenameNoExtension}",
             "dependsOn": [
                 "CUDA: BUILD"
             ],
@@ -52,7 +52,7 @@
                 "cuda",
                 "--stats",
                 "true",
-                "${fileBasenameNoExtension}"
+                "bin/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"
@@ -99,7 +99,7 @@
                 "SourceCounters",
                 "--target-processes",
                 "all",
-                "${fileBasenameNoExtension}"
+                "bin/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"

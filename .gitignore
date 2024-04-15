@@ -1,5 +1,6 @@
 x64/
 .vs/
+*/bin/*
 .vcxproj.user
 *solution*
 *.nsys-rep
