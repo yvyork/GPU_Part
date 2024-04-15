@@ -2,6 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Create bin",
+            "type": "shell",
+            "command": "mkdir",
+            "args": [
+                "-p",
+                "${fileDirname}/bin"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "type": "shell",
             "label": "CUDA: BUILD",
             "command": "nvcc",
@@ -25,7 +36,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "dependsOn": ["Create bin"],
         },
         {
             "label": "CUDA: RUN",
