@@ -19,7 +19,7 @@
                 "${fileBasenameNoExtension}"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": ["$gcc"],
             "group": {
@@ -29,13 +29,12 @@
         },
         {
             "label": "CUDA: RUN",
-            "type": "shell",
             "command": "./${fileBasenameNoExtension}",
             "dependsOn": [
                 "CUDA: BUILD"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": ["$gcc"]
         },
@@ -56,7 +55,7 @@
                 "${fileBasenameNoExtension}"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": []
         },
@@ -103,7 +102,7 @@
                 "${fileBasenameNoExtension}"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${fileDirname}"
             },
             "problemMatcher": []
         }

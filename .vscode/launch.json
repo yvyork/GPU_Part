@@ -8,10 +8,10 @@
             "name": "CUDA: DEBUG",
             "type": "cuda-gdb",
             "request": "launch",
-            "program": "${workspaceFolder}/${fileBasenameNoExtension}",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
             "stopAtEntry": false,
             "preLaunchTask": "CUDA: BUILD",
-            "cwd": "${workspaceFolder}",
+            "cwd": "${fileDirname}",
         },
     ]
 }
