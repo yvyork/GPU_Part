@@ -61,7 +61,35 @@ inline void gpuAssert(cudaError_t code, const char* file, int line, bool abort =
 */
 __global__ void movingSumSharedMemStatic(int* vec, int* result_vec, int size)
 {
-    //ToDo
+    int shm_size = 1024; // how to choose right size?
+    __shared__ int shm_data[1024];
+
+    auto globalIdx = (blockIdx.x * blockDim.x) + threadIdx.x;
+
+    // read data from global into shm
+    shm_data[globalIdx % shm_size] = vec[globalIdx];
+    __syncthreads();
+
+    int result = 0;
+    if (globalIdx >= RADIUS && globalIdx < size - RADIUS) {
+        for (int offset = -RADIUS; offset < RADIUS; offset++) {
+            result += shm_data[(globalIdx+offset) % shm_size];
+        }
+    }
+
+    if (globalIdx < RADIUS) {
+        for (int offset = -globalIdx; offset <= RADIUS; offset++) {
+            result += shm_data[(globalIdx+offset) % shm_size];                
+        }
+    }
+
+    if (globalIdx < size && globalIdx >= size-RADIUS) {
+        for (int offset = -RADIUS; offset < size-globalIdx; offset++) {
+            result += shm_data[(globalIdx+offset) % shm_size];
+        }
+    }
+
+    result_vec[globalIdx] = result;
 }
 
 
@@ -213,7 +241,7 @@ int main(void)
     int nbr_blocks = ((WIDTH % BLOCKSIZE) != 0) ? (WIDTH / BLOCKSIZE + 1) : (WIDTH / BLOCKSIZE);
     movingSumGlobal << <nbr_blocks, BLOCKSIZE >> > (deviceVecInput, deviceVecOutput1, WIDTH);
     gpuErrCheck(cudaPeekAtLastError());
-    //ToDo: movingSumSharedMemStatic << <nbr_blocks, BLOCKSIZE >> > (deviceVecInput, deviceVecOutput2, WIDTH);
+    movingSumSharedMemStatic << <nbr_blocks, BLOCKSIZE >> > (deviceVecInput, deviceVecOutput2, WIDTH);
     gpuErrCheck(cudaPeekAtLastError());
     //ToDo: movingSumSharedMemDynamic <<<nbr_blocks, BLOCKSIZE, ?????????? >>> (deviceVecInput, deviceVecOutput3, WIDTH);
     gpuErrCheck(cudaPeekAtLastError());
@@ -229,8 +257,8 @@ int main(void)
     // Check for errors in result
     auto ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU1, WIDTH);
     ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU2, WIDTH);
-    ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU3, WIDTH);
-    ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU4, WIDTH);
+    // ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU3, WIDTH);
+    // ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU4, WIDTH);
 
     // Free memory on device & host
     cudaFree(deviceVecInput);
