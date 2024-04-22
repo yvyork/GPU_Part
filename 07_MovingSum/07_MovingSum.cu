@@ -191,7 +191,32 @@ __global__ void movingSumSharedMemDynamic(int* vec, int* result_vec, int size)
 */
 __global__ void movingSumAtomics(int* vec, int* result_vec, int size)
 {
-    //ToDo
+    int globalIdx = (blockIdx.x * blockDim.x) + threadIdx.x;
+
+    if (globalIdx < size)
+    {
+        int val = vec[globalIdx];
+
+        if (globalIdx >= RADIUS && globalIdx < size - RADIUS)
+        {
+            for (int offset = -RADIUS; offset <= RADIUS; offset++) {
+                atomicAdd(&result_vec[globalIdx + offset], val); // vorausgesetzt result_vec alles 0...
+            }
+        }
+
+        if (globalIdx < RADIUS) {
+            for (int offset = -globalIdx; offset <= RADIUS; offset++) {
+                atomicAdd(&result_vec[globalIdx + offset], val);
+            }
+        }
+
+        if (globalIdx < size && globalIdx >= size - RADIUS) {
+            for (int offset = -RADIUS; offset <= size - globalIdx; offset++) {
+                atomicAdd(&result_vec[globalIdx + offset], val);
+            }
+        }      
+    }
+    
 }
 
 
@@ -316,7 +341,7 @@ int main(void)
     gpuErrCheck(cudaPeekAtLastError());
     movingSumSharedMemDynamic <<<nbr_blocks, BLOCKSIZE, (BLOCKSIZE + 2*RADIUS) * sizeof(int) >>> (deviceVecInput, deviceVecOutput3, WIDTH);
     gpuErrCheck(cudaPeekAtLastError());
-    //ToDo: movingSumAtomics << <nbr_blocks, BLOCKSIZE >> > (deviceVecInput, deviceVecOutput4, WIDTH);
+    movingSumAtomics << <nbr_blocks, BLOCKSIZE >> > (deviceVecInput, deviceVecOutput4, WIDTH);
     gpuErrCheck(cudaPeekAtLastError());
 
     // Copy the result stored in device_y back to host_y
@@ -329,7 +354,7 @@ int main(void)
     auto ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU1, WIDTH);
     ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU2, WIDTH);
     ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU3, WIDTH);
-    // ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU4, WIDTH);
+    ret = compareResultVec(hostVecOutputCPU, hostVecOutputGPU4, WIDTH);
 
     // Free memory on device & host
     cudaFree(deviceVecInput);
