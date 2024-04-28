@@ -1,0 +1,63 @@
+paperspace@pssjv268c2tm:~/source/GPU_Part$ nvprof ./Global/bin/mmul 
+==90970== NVPROF is profiling process 90970, command: ./Global/bin/mmul
+COMPLETED SUCCESSFULLY
+==90970== Profiling application: ./Global/bin/mmul
+==90970== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   93.27%  43.082ms         1  43.082ms  43.082ms  43.082ms  matrixMul(int const *, int const *, int*, int)
+                    3.56%  1.6438ms         2  821.92us  817.12us  826.72us  [CUDA memcpy HtoD]
+                    3.18%  1.4666ms         1  1.4666ms  1.4666ms  1.4666ms  [CUDA memcpy DtoH]
+      API calls:   79.20%  186.58ms         3  62.194ms  83.267us  186.41ms  cudaMalloc
+                   20.32%  47.864ms         3  15.955ms  1.0039ms  45.762ms  cudaMemcpy
+                    0.24%  571.42us         3  190.47us  170.09us  227.43us  cudaFree
+                    0.12%  293.35us       114  2.5730us     805ns  70.680us  cuDeviceGetAttribute
+                    0.10%  233.64us         1  233.64us  233.64us  233.64us  cudaLaunchKernel
+                    0.01%  26.267us         1  26.267us  26.267us  26.267us  cuDeviceGetName
+                    0.01%  14.311us         1  14.311us  14.311us  14.311us  cuDeviceGetPCIBusId
+                    0.00%  6.3080us         3  2.1020us  1.1370us  3.9200us  cuDeviceGetCount
+                    0.00%  2.5250us         2  1.2620us     875ns  1.6500us  cuDeviceGet
+                    0.00%  1.4760us         1  1.4760us  1.4760us  1.4760us  cuDeviceTotalMem
+                    0.00%  1.4410us         1  1.4410us  1.4410us  1.4410us  cuModuleGetLoadingMode
+                    0.00%  1.0820us         1  1.0820us  1.0820us  1.0820us  cuDeviceGetUuid
+paperspace@pssjv268c2tm:~/source/GPU_Part$ nvprof ./Tiled/bin/mmul 
+==91290== NVPROF is profiling process 91290, command: ./Tiled/bin/mmul
+COMPLETED SUCCESSFULLY
+==91290== Profiling application: ./Tiled/bin/mmul
+==91290== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   93.53%  37.307ms         1  37.307ms  37.307ms  37.307ms  matrixMul(int const *, int const *, int*)
+                    3.66%  1.4596ms         1  1.4596ms  1.4596ms  1.4596ms  [CUDA memcpy DtoH]
+                    2.81%  1.1225ms         2  561.23us  553.28us  569.18us  [CUDA memcpy HtoD]
+      API calls:   86.19%  265.48ms         3  88.494ms  77.821us  265.32ms  cudaMalloc
+                   13.43%  41.356ms         3  13.785ms  684.25us  39.959ms  cudaMemcpy
+                    0.20%  612.65us         3  204.22us  174.88us  259.06us  cudaFree
+                    0.09%  279.61us       114  2.4520us     798ns  66.632us  cuDeviceGetAttribute
+                    0.08%  242.65us         1  242.65us  242.65us  242.65us  cudaLaunchKernel
+                    0.01%  32.532us         1  32.532us  32.532us  32.532us  cuDeviceGetName
+                    0.00%  13.461us         1  13.461us  13.461us  13.461us  cuDeviceGetPCIBusId
+                    0.00%  6.3910us         3  2.1300us  1.0200us  3.9620us  cuDeviceGetCount
+                    0.00%  2.6270us         2  1.3130us     853ns  1.7740us  cuDeviceGet
+                    0.00%  1.7870us         1  1.7870us  1.7870us  1.7870us  cuDeviceTotalMem
+                    0.00%  1.6550us         1  1.6550us  1.6550us  1.6550us  cuModuleGetLoadingMode
+                    0.00%     915ns         1     915ns     915ns     915ns  cuDeviceGetUuid
+paperspace@pssjv268c2tm:~/source/GPU_Part$ nvprof ./TileMatMul/bin/tiledMatMul 
+==91629== NVPROF is profiling process 91629, command: ./TileMatMul/bin/tiledMatMul
+COMPLETED SUCCESSFULLY
+==91629== Profiling application: ./TileMatMul/bin/tiledMatMul
+==91629== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   92.35%  37.912ms         1  37.912ms  37.912ms  37.912ms  matrixMul(int*, int*, int*)
+                    4.03%  1.6559ms         2  827.95us  825.76us  830.14us  [CUDA memcpy HtoD]
+                    3.62%  1.4860ms         1  1.4860ms  1.4860ms  1.4860ms  [CUDA memcpy DtoH]
+      API calls:   81.07%  188.81ms         3  62.937ms  86.140us  188.63ms  cudaMalloc
+                   18.39%  42.830ms         3  14.277ms  1.0630ms  40.651ms  cudaMemcpy
+                    0.28%  648.25us         3  216.08us  177.35us  290.36us  cudaFree
+                    0.12%  283.30us         1  283.30us  283.30us  283.30us  cudaLaunchKernel
+                    0.12%  270.87us       114  2.3760us     800ns  68.797us  cuDeviceGetAttribute
+                    0.02%  35.707us         1  35.707us  35.707us  35.707us  cuDeviceGetName
+                    0.01%  12.308us         1  12.308us  12.308us  12.308us  cuDeviceGetPCIBusId
+                    0.00%  6.3370us         3  2.1120us  1.0230us  3.7080us  cuDeviceGetCount
+                    0.00%  2.3690us         2  1.1840us     844ns  1.5250us  cuDeviceGet
+                    0.00%  1.4420us         1  1.4420us  1.4420us  1.4420us  cuDeviceTotalMem
+                    0.00%  1.2620us         1  1.2620us  1.2620us  1.2620us  cuModuleGetLoadingMode
+                    0.00%  1.0080us         1  1.0080us  1.0080us  1.0080us  cuDeviceGetUuid
